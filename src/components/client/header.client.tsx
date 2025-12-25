@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import {
   CodeOutlined,
   ContactsOutlined,
-  FireOutlined,
+  DashOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   RiseOutlined,
-  TwitterOutlined,
+  FireOutlined, // Đổi icon sang ngọn lửa cho "Hot/Trendy"
+  UserOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
@@ -19,19 +21,23 @@ import {
   message,
   Menu,
   Button,
-} from "antd"; // Thêm Button
+  Layout,
+  theme, // Giữ lại theme nhưng style chủ yếu sẽ do CSS module xử lý
+} from "antd";
 import styles from "@/styles/client.module.scss";
 import { isMobile } from "react-device-detect";
-import { FaReact } from "react-icons/fa";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { callLogout } from "@/config/api";
 import { setLogoutAction } from "@/redux/slice/accountSlide";
 import ManageAccount from "./modal/manage.account";
 
+const { Header: AntHeader } = Layout;
+
 const Header = (props: any) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  // Không dùng colorBgContainer mặc định nữa để dùng Glassmorphism trong CSS
 
   const isAuthenticated = useAppSelector(
     (state) => state.account.isAuthenticated
@@ -52,7 +58,7 @@ const Header = (props: any) => {
     {
       label: <Link to={"/"}>Trang Chủ</Link>,
       key: "/",
-      icon: <TwitterOutlined />,
+      icon: <HomeOutlined />,
     },
     {
       label: <Link to={"/job"}>Việc Làm IT</Link>,
@@ -60,7 +66,7 @@ const Header = (props: any) => {
       icon: <CodeOutlined />,
     },
     {
-      label: <Link to={"/company"}>Top Công ty IT</Link>,
+      label: <Link to={"/company"}>Top Công ty</Link>,
       key: "/company",
       icon: <RiseOutlined />,
     },
@@ -97,7 +103,7 @@ const Header = (props: any) => {
           {
             label: <Link to={"/admin"}>Trang Quản Trị</Link>,
             key: "admin",
-            icon: <FireOutlined />,
+            icon: <DashOutlined />,
           },
         ]
       : []),
@@ -116,77 +122,101 @@ const Header = (props: any) => {
 
   return (
     <>
-      <div className={styles["header-section"]}>
+      <AntHeader className={styles["header-section"]}>
         <div className={styles["container"]}>
           {!isMobile ? (
-            <>
+            <div className={styles["header-desktop"]}>
+              {/* Logo Area */}
               <div className={styles["brand"]} onClick={() => navigate("/")}>
-                <FaReact />
+                <FireOutlined className={styles["brand-icon"]} />
                 <span className={styles["brand-text"]}>
-                  JOB<span style={{ color: "#0A65CC" }}>FINDER</span>
+                  JOB<span className={styles["brand-highlight"]}>FIND</span>
                 </span>
               </div>
 
+              {/* Navigation Menu */}
               <div className={styles["top-menu"]}>
                 <Menu
                   onClick={onClick}
                   selectedKeys={[current]}
                   mode="horizontal"
                   items={items}
-                  style={{ minWidth: 400 }}
+                  className={styles["menu-custom"]}
+                  disabledOverflow
                 />
-
-                <div className={styles["extra"]}>
-                  {isAuthenticated === false ? (
-                    <Space>
-                      <Link to={"/login"}>Đăng Nhập</Link>
-                      <Button
-                        type="primary"
-                        onClick={() => navigate("/register")}
-                      >
-                        Đăng Ký
-                      </Button>
-                    </Space>
-                  ) : (
-                    <Dropdown
-                      menu={{ items: itemsDropdown }}
-                      trigger={["click"]}
-                    >
-                      <Space style={{ cursor: "pointer" }}>
-                        <Avatar
-                          src={`${
-                            import.meta.env.VITE_BACKEND_URL
-                          }/images/avatar/${user?.name}`}
-                        >
-                          {user?.name?.substring(0, 2)?.toUpperCase()}
-                        </Avatar>
-                        <span>{user?.name}</span>
-                      </Space>
-                    </Dropdown>
-                  )}
-                </div>
               </div>
-            </>
+
+              {/* User Actions */}
+              <div className={styles["extra"]}>
+                {isAuthenticated === false ? (
+                  <Space size="small">
+                    {" "}
+                    {/* Giảm size space để CSS control tốt hơn */}
+                    <Link to={"/login"} className={styles["login-link"]}>
+                      Đăng Nhập
+                    </Link>
+                    <Button
+                      type="primary"
+                      // shape="round" -> Đã xử lý border-radius trong CSS
+                      onClick={() => navigate("/register")}
+                      className={styles["register-btn"]}
+                    >
+                      Đăng Ký Ngay
+                    </Button>
+                  </Space>
+                ) : (
+                  <Dropdown
+                    menu={{ items: itemsDropdown }}
+                    trigger={["click", "hover"]} // Thêm hover cho tiện
+                    placement="bottomRight"
+                    arrow // Thêm mũi tên chỉ vào avatar cho đẹp
+                  >
+                    <Space className={styles["user-dropdown"]}>
+                      <Avatar
+                        src={`${
+                          import.meta.env.VITE_BACKEND_URL
+                        }/images/avatar/${user?.name}`}
+                        icon={<UserOutlined />}
+                        className={styles["user-avatar"]}
+                        size="large" // Tăng kích thước avatar
+                      />
+                      <span className={styles["user-name"]}>{user?.name}</span>
+                    </Space>
+                  </Dropdown>
+                )}
+              </div>
+            </div>
           ) : (
             <div className={styles["header-mobile"]}>
-              <span>JOB FINDER</span>
-              <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
+              <div
+                className={styles["brand-mobile"]}
+                onClick={() => navigate("/")}
+              >
+                <FireOutlined className={styles["brand-icon"]} />
+                <span className={styles["brand-text"]}>JOBHUNT</span>
+              </div>
+              <MenuFoldOutlined
+                className={styles["menu-trigger"]}
+                onClick={() => setOpenMobileMenu(true)}
+              />
             </div>
           )}
         </div>
-      </div>
+      </AntHeader>
 
       <Drawer
-        title="Chức năng"
+        title="Menu Chức năng"
         placement="right"
         onClose={() => setOpenMobileMenu(false)}
         open={openMobileMenu}
+        width={280}
       >
         <Menu
           onClick={onClick}
           selectedKeys={[current]}
-          mode="vertical"
+          mode="inline"
           items={itemsMobiles}
+          style={{ border: "none" }}
         />
       </Drawer>
 

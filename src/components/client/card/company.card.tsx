@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Empty, Pagination, Row, Spin } from "antd";
+import { Card, Col, Empty, Pagination, Row, Spin } from "antd";
 import { useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ const CompanyCard = (props: IProps) => {
   const [displayCompany, setDisplayCompany] = useState<ICompany[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(4); // Hiển thị 4 công ty trên 1 hàng
+  const [pageSize, setPageSize] = useState(8); // Tăng lên 8 để hiển thị 2 hàng cho đẹp
   const [total, setTotal] = useState(0);
 
   const navigate = useNavigate();
@@ -59,32 +59,25 @@ const CompanyCard = (props: IProps) => {
   return (
     <div className={styles["company-card-section"]}>
       <Spin spinning={isLoading} tip="Loading...">
-        <Row gutter={[24, 24]}>
+        <Row gutter={[20, 20]}>
           <Col span={24}>
-            <div
-              className={isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]}
-              style={{ marginBottom: 20 }}
-            >
-              <span
-                className={styles["title"]}
-                style={{ fontSize: 24, fontWeight: 700 }}
-              >
+            {/* --- SỬA PHẦN NÀY ĐỂ FIX LỖI DÍNH CHỮ --- */}
+            <div className={styles["section-header"]}>
+              <span className={styles["section-title"]}>
                 Nhà Tuyển Dụng Hàng Đầu
               </span>
               {!showPagination && (
-                <Link
-                  to="/company"
-                  style={{ color: "#0A65CC", fontWeight: 500 }}
-                >
+                <Link to="/company" className={styles["view-all"]}>
                   Xem tất cả &rarr;
                 </Link>
               )}
             </div>
+            {/* ---------------------------------------- */}
           </Col>
 
           {displayCompany?.map((item) => {
             return (
-              <Col span={24} md={12} lg={6} key={item.id}>
+              <Col span={24} md={8} lg={6} key={item.id}>
                 <Card
                   className={styles["company-card-modern"]}
                   hoverable

@@ -19,7 +19,6 @@ const SearchClient = () => {
     { label: string; value: string }[]
   >([]);
 
-  // Giữ nguyên logic fetch API
   useEffect(() => {
     const fetchSkill = async () => {
       let query = `page=1&size=100&sort=createdAt,desc`;
@@ -28,7 +27,8 @@ const SearchClient = () => {
         const arr =
           res?.data?.result?.map((item) => ({
             label: item.name as string,
-            value: (item.id + "") as string,
+            // QUAN TRỌNG: Sửa value từ ID sang Name để khớp với bộ lọc skills.name
+            value: item.name as string,
           })) ?? [];
         setOptionsSkills(arr);
       }
@@ -37,38 +37,47 @@ const SearchClient = () => {
   }, []);
 
   useEffect(() => {
-    // Sync URL param với Form
-    if (location.search) {
-      const queryLocation = searchParams.get("location");
-      const querySkills = searchParams.get("skills");
-      if (queryLocation) {
-        form.setFieldValue("location", queryLocation.split(","));
-      }
-      if (querySkills) {
-        form.setFieldValue("skills", querySkills.split(","));
-      }
+    // Sync URL param với Form khi load trang hoặc URL đổi
+    const queryLocation = searchParams.get("location");
+    const querySkills = searchParams.get("skills");
+
+    if (queryLocation) {
+      form.setFieldValue("location", queryLocation.split(","));
+    } else {
+      form.setFieldValue("location", []);
+    }
+
+    if (querySkills) {
+      form.setFieldValue("skills", querySkills.split(","));
+    } else {
+      form.setFieldValue("skills", []);
     }
   }, [location.search]);
 
   const onFinish = async (values: any) => {
-    let query = "";
-    if (values?.location?.length) {
-      query = `location=${values?.location?.join(",")}`;
-    }
-    if (values?.skills?.length) {
-      query = values.location?.length
-        ? query + `&skills=${values?.skills?.join(",")}`
-        : `skills=${values?.skills?.join(",")}`;
+    const { skills, location } = values;
+
+    // Sử dụng URLSearchParams để tạo query string chuẩn
+    const params = new URLSearchParams();
+
+    if (skills && skills.length > 0) {
+      params.append("skills", skills.join(","));
     }
 
-    if (!query) {
+    if (location && location.length > 0) {
+      params.append("location", location.join(","));
+    }
+
+    // Nếu không chọn gì cả thì báo lỗi
+    if (!params.toString()) {
       notification.error({
         message: "Có lỗi xảy ra",
-        description: "Vui lòng chọn tiêu chí để search",
+        description: "Vui lòng chọn tiêu chí để tìm kiếm",
       });
       return;
     }
-    navigate(`/job?${query}`);
+
+    navigate(`/job?${params.toString()}`);
   };
 
   return (
@@ -76,9 +85,9 @@ const SearchClient = () => {
       form={form}
       onFinish={onFinish}
       layout="inline"
-      style={{ width: "100%" }} // Form chiếm full chiều rộng
+      style={{ width: "100%" }}
     >
-      <Row gutter={[12, 12]} style={{ width: "100%" }} align="middle">
+      <Row gutter={[0, 0]} style={{ width: "100%" }} align="middle">
         {/* Input Skills */}
         <Col span={24} md={10}>
           <Form.Item name="skills" style={{ width: "100%", margin: 0 }}>
@@ -88,7 +97,13 @@ const SearchClient = () => {
               showArrow={false}
               style={{ width: "100%" }}
               placeholder={
-                <span style={{ color: "#999" }}>
+                <span
+                  style={{
+                    color: "#999",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <MonitorOutlined style={{ marginRight: 8 }} />
                   Tìm theo kỹ năng...
                 </span>
@@ -96,20 +111,24 @@ const SearchClient = () => {
               optionLabelProp="label"
               options={optionsSkills}
               size="large"
-              bordered={false} // Hỗ trợ bản AntD cũ
-              variant="borderless" // Hỗ trợ bản AntD mới (5.13+)
+              bordered={false}
+              // @ts-ignore
+              variant="borderless"
             />
           </Form.Item>
         </Col>
 
         {/* Đường gạch ngăn cách (Chỉ hiện trên PC) */}
-        <Col span={0} md={1}>
+        <Col
+          xs={0}
+          md={1}
+          style={{ display: "flex", justifyContent: "center" }}
+        >
           <div
             style={{
               width: 1,
-              height: 30,
+              height: 35,
               background: "#E4E5E8",
-              margin: "0 auto",
             }}
           ></div>
         </Col>
@@ -123,15 +142,22 @@ const SearchClient = () => {
               showArrow={false}
               style={{ width: "100%" }}
               placeholder={
-                <span style={{ color: "#999" }}>
+                <span
+                  style={{
+                    color: "#999",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <EnvironmentOutlined style={{ marginRight: 8 }} />
-                  Địa điểm làm việc...
+                  Địa điểm...
                 </span>
               }
               optionLabelProp="label"
               options={LOCATION_LIST}
               size="large"
               bordered={false}
+              // @ts-ignore
               variant="borderless"
             />
           </Form.Item>
@@ -144,9 +170,12 @@ const SearchClient = () => {
               type="primary"
               htmlType="submit"
               size="large"
-              block // Nút full chiều rộng cột
+              block
               icon={<SearchOutlined />}
-              style={{ height: 46 }} // Tăng chiều cao nút cho đẹp
+              style={{
+                height: 48, // Cao bằng input
+                borderRadius: "0 12px 12px 0", // Bo góc phải nếu muốn khớp với container
+              }}
             >
               Tìm kiếm
             </Button>

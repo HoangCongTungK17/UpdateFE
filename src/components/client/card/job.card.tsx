@@ -4,7 +4,6 @@ import { IJob } from "@/types/backend";
 import { EnvironmentOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Empty, Pagination, Row, Spin } from "antd";
 import { useState, useEffect } from "react";
-import { isMobile } from "react-device-detect";
 import {
   Link,
   useLocation,
@@ -51,23 +50,33 @@ const JobCard = (props: IProps) => {
       query += `&${sortQuery}`;
     }
 
-    // Check query string từ URL
+    // --- LOGIC TÌM KIẾM TỪ URL ---
     const queryLocation = searchParams.get("location");
     const querySkills = searchParams.get("skills");
+
     if (queryLocation || querySkills) {
       let q = "";
+
+      // 1. Tìm theo địa điểm (Location)
       if (queryLocation) {
         q = sfIn("location", queryLocation.split(",")).toString();
       }
 
+      // 2. Tìm theo kỹ năng (Skills)
       if (querySkills) {
-        q = queryLocation
-          ? q + " and " + `${sfIn("skills", querySkills.split(","))}`
-          : `${sfIn("skills", querySkills.split(","))}`;
+        // QUAN TRỌNG: Phải tìm theo "skills.name" thay vì "skills"
+        const skillFilter = sfIn(
+          "skills.name",
+          querySkills.split(",")
+        ).toString();
+
+        // Nếu đã có filter location thì nối bằng "and", ngược lại lấy luôn
+        q = q ? `${q} and ${skillFilter}` : skillFilter;
       }
 
       query += `&filter=${encodeURIComponent(q)}`;
     }
+    // -----------------------------
 
     const res = await callFetchJob(query);
     if (res && res.data) {
@@ -99,24 +108,16 @@ const JobCard = (props: IProps) => {
     <div className={styles["card-job-section"]}>
       <div className={styles["job-content"]}>
         <Spin spinning={isLoading} tip="Loading...">
-          <Row gutter={[24, 24]}>
+          <Row gutter={[20, 20]}>
             <Col span={24}>
-              <div
-                className={
-                  isMobile ? styles["dflex-mobile"] : styles["dflex-pc"]
-                }
-                style={{ marginBottom: 10, alignItems: "center" }}
-              >
-                <span
-                  className={styles["title"]}
-                  style={{ fontSize: 24, fontWeight: "bold" }}
-                >
+              <div className={styles["section-header"]}>
+                <span className={styles["section-title"]}>
                   {showPagination
                     ? "Danh Sách Công Việc"
                     : "Công Việc Mới Nhất"}
                 </span>
                 {!showPagination && (
-                  <Link to="/job" style={{ fontWeight: 500, color: "#0A65CC" }}>
+                  <Link to="/job" className={styles["view-all"]}>
                     Xem tất cả &rarr;
                   </Link>
                 )}
@@ -124,12 +125,9 @@ const JobCard = (props: IProps) => {
             </Col>
 
             {displayJob?.map((item) => {
-              // --- LOGIC HIỂN THỊ ĐỊA CHỈ ---
-              // Ưu tiên địa chỉ công ty, nếu không có thì dùng địa điểm Job
               const companyAddress = (item.company as any)?.address;
               const displayLocation =
                 companyAddress || getLocationName(item.location);
-              // -----------------------------
 
               return (
                 <Col span={24} md={12} key={item.id}>
@@ -196,7 +194,7 @@ const JobCard = (props: IProps) => {
             {(!displayJob || (displayJob && displayJob.length === 0)) &&
               !isLoading && (
                 <div className={styles["empty"]}>
-                  <Empty description="Không có dữ liệu" />
+                  <Empty description="Không tìm thấy công việc phù hợp" />
                 </div>
               )}
           </Row>

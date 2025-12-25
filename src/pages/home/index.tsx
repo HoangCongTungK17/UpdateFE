@@ -1,5 +1,5 @@
-import { Divider } from "antd";
-import styles from "@/styles/client.module.scss"; // Dùng alias @ cho đồng bộ
+import { Divider, Col, Row } from "antd";
+import styles from "@/styles/client.module.scss";
 import SearchClient from "@/components/client/search.client";
 import JobCard from "@/components/client/card/job.card";
 import CompanyCard from "@/components/client/card/company.card";
@@ -7,12 +7,11 @@ import CompanyCard from "@/components/client/card/company.card";
 const HomePage = () => {
   return (
     <div className={styles["homepage-container"]}>
-      {/* --- HERO SECTION --- */}
-      {/* Vùng Banner đầu trang với background gradient */}
+      {/* --- HERO SECTION (Giữ nền trắng) --- */}
       <div className={styles["hero-section"]}>
         <div className={styles["container"]}>
+          {/* ... (Giữ nguyên nội dung Hero cũ của bạn) ... */}
           <div className={styles["hero-content"]}>
-            {/* Tiêu đề lớn gây ấn tượng */}
             <h1 className={styles["title"]}>
               Tìm Kiếm Cơ Hội <br />
               <span>Việc Làm Tốt Nhất</span> Của Bạn
@@ -22,7 +21,6 @@ const HomePage = () => {
               tuyển.
             </p>
 
-            {/* Thanh tìm kiếm nằm nổi bật ở giữa */}
             <div className={styles["search-box"]}>
               <SearchClient />
             </div>
@@ -30,21 +28,20 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* --- BODY CONTENT --- */}
-      <div className={styles["container"]} style={{ paddingBottom: 60 }}>
-        {/* Section: Top Công Ty (Giữ nguyên component cũ, chỉ thêm tiêu đề đẹp) */}
-        <Divider orientation="left">
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#18191C" }}>
-            Nhà Tuyển Dụng Hàng Đầu
-          </span>
-        </Divider>
-        <CompanyCard />
+      {/* --- BODY SECTION (Thêm nền xám ở đây) --- */}
+      <div className={styles["bg-grey"]}>
+        <div className={styles["container"]}>
+          {/* Section: Top Công Ty */}
+          {/* Dùng Divider kiểu mới cho gọn */}
+          <div style={{ marginBottom: 20, marginTop: 10 }}>
+            <CompanyCard />
+          </div>
 
-        <div style={{ margin: 80 }}></div>
+          <div style={{ margin: 50 }}></div>
 
-        {/* Section: Việc làm mới nhất */}
-        {/* JobCard đã có sẵn tiêu đề bên trong (theo code Bước 3) nên không cần Divider ở đây */}
-        <JobCard />
+          {/* Section: Việc làm mới nhất */}
+          <JobCard />
+        </div>
       </div>
     </div>
   );
