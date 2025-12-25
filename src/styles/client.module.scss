@@ -1,0 +1,520 @@
+// src/styles/client.module.scss
+
+$primary-color: #0a65cc; // Màu chủ đạo đã chọn ở bước 1
+$text-color: #18191c;
+$gray-bg: #f1f2f4;
+
+.header-section {
+  background-color: #ffffff;
+  height: 80px; // Tăng chiều cao để thoáng hơn
+  display: flex;
+  align-items: center;
+  position: sticky; // Dính lên trên cùng
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); // Đổ bóng nhẹ tinh tế
+  border-bottom: 1px solid #e4e5e8;
+
+  .container {
+    width: 100%;
+    max-width: 1320px; // Chuẩn width rộng hơn cho màn hình hiện đại
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // Logo thương hiệu
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+
+    svg {
+      font-size: 32px;
+      color: $primary-color;
+    }
+
+    .brand-text {
+      font-size: 24px;
+      font-weight: 700;
+      color: $text-color;
+      letter-spacing: -0.5px;
+    }
+  }
+
+  .top-menu {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 40px;
+
+    // Custom lại Ant Design Menu để bỏ border mặc định
+    :global {
+      .ant-menu {
+        border-bottom: none !important;
+        background: transparent;
+        font-size: 16px;
+        font-weight: 500;
+        width: 100%;
+
+        .ant-menu-item {
+          color: #5e6670;
+          &:hover,
+          &.ant-menu-item-selected {
+            color: $primary-color !important;
+            &::after {
+              border-bottom-width: 3px !important; // Line active dày hơn
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .extra {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: auto;
+
+    a {
+      text-decoration: none;
+      color: $text-color;
+      font-weight: 600;
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+// Mobile Header Styles
+.header-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 15px;
+
+  span {
+    font-size: 20px;
+    font-weight: bold;
+    color: $primary-color;
+  }
+
+  svg {
+    font-size: 24px;
+    color: #18191c;
+  }
+}
+
+// ... (Giữ nguyên code header cũ) ...
+
+// ============================================
+// HOME PAGE STYLES (New)
+// ============================================
+
+.hero-section {
+  background: linear-gradient(
+    135deg,
+    #f0f4ff 0%,
+    #ffffff 100%
+  ); // Gradient nhẹ nhàng hiện đại
+  padding: 80px 0 60px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #ebf1f9;
+
+  .hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+
+    .title {
+      font-size: 48px;
+      font-weight: 800;
+      color: #18191c;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      line-height: 1.2;
+
+      span {
+        color: $primary-color;
+      }
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #5e6670;
+      margin-bottom: 40px;
+    }
+  }
+
+  .search-box {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 44, 109, 0.1); // Bóng đổ sâu tạo chiều sâu
+    display: flex;
+    gap: 10px;
+    border: 1px solid #e4e5e8;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      padding: 10px;
+    }
+  }
+}
+
+// Job Card Modern Styles
+.job-card-modern {
+  border: 1px solid #e4e5e8;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 100%;
+  background: #fff;
+
+  &:hover {
+    border-color: #b4c0e0;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 10, 60, 0.08);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #f0f0f0;
+      padding: 4px;
+    }
+
+    .info {
+      flex: 1;
+      h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: $text-color;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .company {
+        color: #767f8c;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .card-body {
+    margin-bottom: 20px;
+
+    .salary {
+      font-weight: 600;
+      color: #0ba02c; // Màu xanh lá cho tiền lương
+      font-size: 16px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #939aad;
+      font-size: 13px;
+    }
+  }
+}
+
+// ============================================
+// JOB DETAIL MODERN STYLES
+// ============================================
+
+.job-detail-section {
+  background-color: #f7f8fa; // Nền xám nhạt làm nổi bật nội dung trắng
+  min-height: 100vh;
+  padding-bottom: 60px;
+
+  // 1. HEADER (HERO BANNER)
+  .job-header-container {
+    background: #ffffff;
+    padding: 40px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+
+    .header-content {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+
+      // Logo công ty to đẹp
+      .company-logo {
+        width: 90px;
+        height: 90px;
+        border-radius: 12px;
+        border: 1px solid #e4e5e8;
+        object-fit: contain;
+        padding: 5px;
+        background: #fff;
+      }
+
+      .job-info-header {
+        flex: 1;
+
+        .job-title {
+          font-size: 30px;
+          font-weight: 800;
+          color: #18191c;
+          margin-bottom: 12px;
+          line-height: 1.2;
+        }
+
+        .job-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 25px;
+          color: #5e6670;
+          font-size: 15px;
+          font-weight: 500;
+
+          span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            svg {
+              color: #0a65cc;
+            } // Icon màu xanh
+          }
+
+          .salary {
+            color: #0a65cc;
+            font-weight: 700;
+            font-size: 18px;
+          }
+        }
+      }
+
+      // Nút Apply nổi bật
+      .btn-apply {
+        min-width: 200px;
+        height: 52px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(10, 101, 204, 0.2);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(10, 101, 204, 0.3);
+        }
+      }
+    }
+  }
+
+  // 2. MAIN CONTENT (CỘT TRÁI)
+  .job-description-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e4e5e8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+    h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #18191c;
+      margin-bottom: 20px;
+    }
+
+    // Style cho nội dung HTML parse ra
+    div,
+    p,
+    li {
+      font-size: 16px;
+      line-height: 1.8; // Giãn dòng dễ đọc
+      color: #444;
+      margin-bottom: 12px;
+    }
+    ul {
+      list-style: disc;
+      margin-left: 20px;
+    }
+  }
+
+  // 3. SIDEBAR (CỘT PHẢI)
+  .company-sidebar-card {
+    background: #fff;
+    border: 1px solid #e4e5e8;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #18191c;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center; // Căn giữa icon và text
+      margin-bottom: 18px;
+      gap: 15px;
+
+      .icon {
+        color: #0a65cc;
+        font-size: 22px;
+        background: #f0f4ff; // Nền tròn mờ sau icon
+        padding: 10px;
+        border-radius: 50%;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .text {
+        div:first-child {
+          // Label
+          color: #939aad;
+          font-size: 13px;
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+        div:last-child {
+          // Value
+          color: #18191c;
+          font-weight: 600;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}
+
+// Mobile Responsive
+@media (max-width: 768px) {
+  .job-detail-section .header-content {
+    flex-direction: column;
+    .btn-apply {
+      width: 100%;
+      margin-top: 15px;
+    }
+  }
+}
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px; // Hoặc tuỳ chỉnh độ rộng
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// ... (Code cũ giữ nguyên)
+
+// FIX LỖI TRÀN MÀN HÌNH (QUAN TRỌNG)
+:global {
+  body {
+    overflow-x: hidden; // Ngăn cuộn ngang toàn trang
+  }
+}
+
+// STYLE CHO COMPANY CARD
+.company-card-modern {
+  border: 1px solid #e4e5e8;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 100%;
+  text-align: center;
+  background: #fff;
+
+  // Ant Design Card body override
+  :global {
+    .ant-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: $primary-color;
+  }
+
+  .company-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .company-info {
+    margin-bottom: 16px;
+    width: 100%;
+
+    .company-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #18191c;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .company-address {
+      color: #767f8c;
+      font-size: 13px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; // Giới hạn 2 dòng địa chỉ
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 38px; // Giữ chiều cao cố định để thẻ đều nhau
+    }
+  }
+
+  .company-footer {
+    margin-top: auto;
+    .jobs-count {
+      color: $primary-color;
+      background: rgba(10, 101, 204, 0.1);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+}
