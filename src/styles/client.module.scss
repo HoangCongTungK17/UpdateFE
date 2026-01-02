@@ -644,3 +644,9 @@ $shadow-soft: 0 4px 30px rgba(0, 0, 0, 0.05);
     flex-direction: column;
   }
 }
+
+:global {
+  .ant-pagination {
+    margin-bottom: 20px;
+  }
+}

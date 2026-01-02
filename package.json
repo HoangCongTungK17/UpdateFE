@@ -1,7 +1,7 @@
 {
-    "name": "react-vite-jobhunter",
-    "author": "TA",
-    "description": "jobhunter TA",
+    "name": "my-job-finder",
+    "author": "HoangTung",
+    "description": "jobfind HCT project",
     "private": true,
     "version": "1.0.0",
     "type": "module",
