@@ -1,5 +1,5 @@
 import { callFetchJob } from "@/config/api";
-import { convertSlug, getLocationName } from "@/config/utils";
+import { convertSlug, getLocationName, LOCATION_LIST } from "@/config/utils";
 import { IJob } from "@/types/backend";
 import { EnvironmentOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Empty, Pagination, Row, Spin } from "antd";
@@ -59,7 +59,13 @@ const JobCard = (props: IProps) => {
 
       // 1. Tìm theo địa điểm (Location)
       if (queryLocation) {
-        q = sfIn("location", queryLocation.split(",")).toString();
+        const locationValues = queryLocation.split(",");
+        const locationLabels = locationValues.map((val) => {
+          const found = LOCATION_LIST.find((item) => item.value === val);
+          return found ? found.label : val;
+        });
+
+        q = sfIn("location", locationLabels).toString();
       }
 
       // 2. Tìm theo kỹ năng (Skills)
@@ -125,9 +131,8 @@ const JobCard = (props: IProps) => {
             </Col>
 
             {displayJob?.map((item) => {
-              const companyAddress = (item.company as any)?.address;
-              const displayLocation =
-                companyAddress || getLocationName(item.location);
+              // Hiển thị địa điểm làm việc thực tế của job, không phải địa chỉ công ty
+              const displayLocation = getLocationName(item.location);
 
               return (
                 <Col span={24} md={12} key={item.id}>
@@ -141,9 +146,8 @@ const JobCard = (props: IProps) => {
                     <div className={styles["card-header"]}>
                       <img
                         alt="company-logo"
-                        src={`${
-                          import.meta.env.VITE_BACKEND_URL
-                        }/storage/company/${item?.company?.logo}`}
+                        src={`${import.meta.env.VITE_BACKEND_URL
+                          }/storage/company/${item?.company?.logo}`}
                         onError={(e: any) => {
                           e.target.onerror = null;
                           e.target.src = "/images/company/default-company.png";

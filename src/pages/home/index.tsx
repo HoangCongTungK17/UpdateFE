@@ -33,11 +33,6 @@ const HomePage = () => {
       {/* --- BODY CONTENT --- */}
       <div className={styles["container"]} style={{ paddingBottom: 60 }}>
         {/* Section: Top Công Ty (Giữ nguyên component cũ, chỉ thêm tiêu đề đẹp) */}
-        <Divider orientation="left">
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#18191C" }}>
-            Nhà Tuyển Dụng Hàng Đầu
-          </span>
-        </Divider>
         <CompanyCard />
 
         <div style={{ margin: 80 }}></div>
